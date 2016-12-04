@@ -68,7 +68,7 @@ namespace CSS_Parser
         }
         List<string> IndivisualTags(string input)
         {
-            string pattern = @"(?<=\}\s*)(?<selector>[^\{\}]+?)(?:\s*\{(?<style>[^\{\}]+)\})";
+            string pattern = @"(?<selector>(?:(?:[^,{]+),?)*?)\{(?:(?<name>[^}:]+):?(?<value>[^};]+);?)*?\}"/*@"(?<=\}\s*)(?<selector>[^\{\}]+?)(?:\s*\{(?<style>[^\{\}]+)\})"*/;
 
             List<string> b = new List<string>();
 
@@ -165,8 +165,8 @@ namespace CSS_Parser
             bool notfound = false;
             bool added = false;
 
-            bool tagcannotexist = false;
-            bool tagExist = true;
+            bool tagcannotexist = true;
+            bool tagExist = false;
 
             foreach (TagWithCSS T in TagWithCSSList)
             {
@@ -181,7 +181,7 @@ namespace CSS_Parser
                             np.PropertyValue = PropertValue;
                             TagWithCSSList[pointinTagWithCSSList].Properties[pointinProperties] = np;
                             added = true;
-                            break;
+                            return true;//break;
                         }
                         notfound = true;
                         pointinProperties++;
@@ -194,7 +194,7 @@ namespace CSS_Parser
                         np.PropertyValue = PropertValue;
                         TagWithCSSList[pointinTagWithCSSList].Properties.Add(np);
                         added = true;
-                        break;                  
+                        return true;//break;                 
                     }
                     tagExist = true;
                     tagcannotexist = false;                    
@@ -217,9 +217,9 @@ namespace CSS_Parser
                 pl.Add(p);
                 t.Properties = pl;
                 TagWithCSSList.Add(t);
-                added = true;
+                return true;//break;
             }
-            return added;
+            return false;
         }
         public CSSPARSER(string input)
         {
