@@ -15,6 +15,11 @@ namespace CSS_Parser
         public string TagName;
         public List<Property> Properties;
     };
+
+    public enum TagType
+    {
+        Tag,Class,Id
+    }
     public class CSSPARSER
     {
         public override string ToString()
@@ -22,12 +27,14 @@ namespace CSS_Parser
             string ToRreturn = string.Empty;
             foreach(TagWithCSS T in TagWithCSSList)
             {
+#if DEBUG
                 ToRreturn += "//---------------------------" + T.TagName + "-----------------------------\n";
+#endif
                 ToRreturn += T.TagName;
-                ToRreturn += " {\n";
+                ToRreturn += "\n{\n";
                 foreach(Property p in T.Properties)
                 {
-                    ToRreturn += p.PropertyName + ":" + p.PropertyValue + ";\n";
+                    ToRreturn += "\t" + p.PropertyName + ":" + p.PropertyValue + ";\n";
                 }
                 ToRreturn += "}\n";
 
@@ -117,7 +124,6 @@ namespace CSS_Parser
         {
             int pointinTagWithCSSList = 0;
             int pointinProperties = 0;
-            bool removed = false;     
 
             foreach (TagWithCSS T in TagWithCSSList)
             {
@@ -126,19 +132,32 @@ namespace CSS_Parser
                     foreach (Property p in T.Properties)
                     {
                         if (p.PropertyName.Equals(ProvertyName, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            
+                        {   
                             TagWithCSSList[pointinTagWithCSSList].Properties.RemoveAt(pointinProperties);
-                            removed = true;
-                            break;
+                            return true;
                         }                       
                         pointinProperties++;
-                    }                  
-                    break;
+                    }
+
                 }
                 pointinTagWithCSSList++;
             }
-            return removed;
+            return false;
+        }
+        public bool RemoveTag(string Tag)
+        {
+            int pointinTagWithCSSList = 0;
+
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TagWithCSSList.RemoveAt(pointinTagWithCSSList);
+                    return true;
+                }
+                pointinTagWithCSSList++;
+            }
+            return false;
         }
         public List<Property> GetProperties(string Tag)
         {
@@ -154,11 +173,29 @@ namespace CSS_Parser
             }
             return new List<Property>();
         }
+        public Property GetPropertie(string Tag,string PropertyName)
+        {
+            int pointinTagWithCSSList = 0;
+
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                   foreach(Property p in T.Properties)
+                    {
+                        if (p.PropertyName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase))
+                            return p;
+                    }
+                }
+                pointinTagWithCSSList++;
+            }
+            return new Property();
+        }
         public void SetCSS(string input)
         {
             TagWithCSSList = GetTagWithCSS(input);
         }
-        public bool AddPropery(string Tag, string ProvertyName, string PropertValue)
+        public bool AddPropery(string Tag, string ProvertyName, string PropertValue, TagType Type = TagType.Tag)
         {
             int pointinTagWithCSSList = 0;
             int pointinProperties = 0;
@@ -167,6 +204,9 @@ namespace CSS_Parser
 
             bool tagcannotexist = true;
             bool tagExist = false;
+
+            if (Type == TagType.Class) { Tag = "." + Tag; }
+            if (Type == TagType.Id) { Tag = "#" + Tag; }
 
             foreach (TagWithCSS T in TagWithCSSList)
             {
