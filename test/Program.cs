@@ -1,5 +1,4 @@
 ﻿using System;
-using CSS_Parser;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -9,8 +8,8 @@ namespace test
     {
         static void Main(string[] args)
         {
-            string s = "";           
-            CSSPARSER p = new CSSPARSER();
+            string s = "";
+            Parser p = new Parser();
             p.SetCSS(s);
             p.AddPropery(".h1", "color", "#fff");
             p.AddPropery(".h1", "a", "#000");

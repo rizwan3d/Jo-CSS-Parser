@@ -7,8 +7,8 @@
     <ProjectGuid>{419710A5-5F35-4998-A0BE-52BEA85884AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSS_Parser</RootNamespace>
-    <AssemblyName>CSS Parser</AssemblyName>
+    <RootNamespace>JoCssParser</RootNamespace>
+    <AssemblyName>Jo CSS Parser</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -39,8 +39,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSSPARSER.cs" />
+    <Compile Include="enums.cs" />
+    <Compile Include="Prser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stucts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
