@@ -106,11 +106,11 @@ namespace JoCSSParser
             input = input.TrimEnd();
             return input;
         }
-        public bool RemoveProperty(string Tag, string ProvertyName)
+        public bool RemoveProperty(string Tag, CssProperty Proverty)
         {
             int pointinTagWithCSSList = 0;
             int pointinProperties = 0;
-
+            string ProvertyName = PrpertyValue[Proverty];
             foreach (TagWithCSS T in TagWithCSSList)
             {
                 if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
@@ -159,7 +159,7 @@ namespace JoCSSParser
             }
             return new List<Property>();
         }
-        public Property GetPropertie(string Tag,string PropertyName)
+        public Property GetPropertie(string Tag,CssProperty Property)
         {
             int pointinTagWithCSSList = 0;
 
@@ -169,7 +169,7 @@ namespace JoCSSParser
                 {
                    foreach(Property p in T.Properties)
                     {
-                        if (p.PropertyName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase))
+                        if (p.PropertyName.Equals(PrpertyValue[Property], StringComparison.InvariantCultureIgnoreCase))
                             return p;
                     }
                 }

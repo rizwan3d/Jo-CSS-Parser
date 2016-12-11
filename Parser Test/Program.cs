@@ -19,6 +19,7 @@ namespace Parser_Test
             p.AddPropery("h1", CssProperty.BackgroundColor, "#fff");
             p.AddPropery("h1", CssProperty.BackgroundColor, "#ebebeb");
             p.AddPropery("h1", CssProperty.Sensation, "aaa");
+            p.AddPropery("h1", CssProperty.ColorStop, "werghjk");
             Console.WriteLine(p.ToString());
             Console.Read();
         }
