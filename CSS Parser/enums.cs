@@ -15,7 +15,7 @@ namespace JoCSSParser
     {
                 FontWeight, BorderRadius, ColorStop, AlignmentAdjust,AlignmentBaseLine
                 ,Animation,AnimationDelay,AnimationDirection,AnimationDuration,AnimationIterationCount
-                ,Animationname,AnimationPlayState,AnimationtimingFunction,appearance,azimuth
+                ,Animationname,AnimationPlayState,AnimationTimingFunction,Appearance,Azimuth
                 ,BackfaceVisibility,Background,BackgroundAttachment,BackgroundBreak,BackgroundClip
                 ,BackgroundColor,BackgroundImage,BackgroundOrigin,BackgroundPosition,BackgroundRepeat
                 ,BackgroundSize,BaseLineShift,Binding,Bleed,BookMarkLabel,BookMarkLevel,BookMarkState
@@ -58,10 +58,9 @@ namespace JoCSSParser
                 ,TransitionProperty,TransitiontiMingFunction,unicodebidi,VerticalAlign,Visibility
                 ,VoiceBalance,VoiceDuration,VoiceFamily,VoicePitch,VoicePitchRange,Voicerate
                 ,VoiceStress,VoiceVolume,Volume,WhiteSpace,WhiteSpaceCollapse,Widows,Width,WordBreak
-                ,WordSpacing,WordWrap,Zinde,NoRepeat,LinearGradient,ColorDodge,Center,ContentBox
-                ,Solid,Thick,Dotted,Absolute,Both,Rect,InLine
-                ,Scroll,Hidden,WebKitFlex,Wrap,RowReverse,Flex,SpaceAround
+                ,WordSpacing,WordWrap,LinearGradient,ColorDodge,Center,ContentBox
+                ,Scroll,Hidden,WebKitFlex,RowReverse,Flex,SpaceAround
                 ,FirstJustify,InterWord,UpperCase,LowerCase,Capitalize,Nowrap,BreakAll,BreakWord,OverLine
-                ,LineThrough, UnderLine,Wavy,MyFirstFont,Sensation               
+                ,LineThrough,Wavy,MyFirstFont,Sensation               
     }
 }
