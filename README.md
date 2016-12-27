@@ -1,5 +1,5 @@
 # Jo-CSS-Parser
-Complete Csss Parser Writen C#
+Complete Css Parser Writen in C#
 
 MIT License Copyright © 2016 Muhammad Rizwan.
 
