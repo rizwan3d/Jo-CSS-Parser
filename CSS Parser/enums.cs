@@ -4,13 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoCSSParser
+namespace JoCssParser
 {
+    /// <summary>
+    /// Deffine Tag type. 
+    /// </summary>
     public enum TagType
     {
-        Tag, Class, Id
+        /// <summary>
+        /// Normal HTMl Tag.
+        /// </summary>
+        Tag,
+        /// <summary>
+        /// Class in HTML Code.
+        /// </summary>
+        Class,
+        /// <summary>
+        /// Tag in HTML Code.
+        /// </summary>
+        Id
     }
 
+    /// <summary>
+    /// HTML Tags. 
+    /// </summary>
+    public enum Tag
+    {
+        h1, h2, h3, h4, h5, h6, body, a, img, ol, ul, li, table, tr, th, nav, heder, footer, form, option, select, button, textarea, input, audio, video, iframe, hr, em, div, pre, p,span
+    }
+
+    /// <summary>
+    /// Css properties list.
+    /// </summary>
     public enum CssProperty
     {
                 FontWeight, BorderRadius, ColorStop, AlignmentAdjust,AlignmentBaseLine

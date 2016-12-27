@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JoCSSParser;
+using JoCssParser;
 
 namespace Parser_Test
 {
@@ -11,16 +7,20 @@ namespace Parser_Test
     {
         static void Main(string[] args)
         {
-            string s = "";
-            Parser p = new Parser();
-            p.SetCSS(s);
-            p.AddPropery("h1", CssProperty.Color, "#fff");
-            p.AddPropery("h1", CssProperty.Color, "#000");
-            p.AddPropery("h1", CssProperty.BackgroundColor, "#fff");
-            p.AddPropery("h1", CssProperty.BackgroundColor, "#ebebeb");
-            p.AddPropery("h1", CssProperty.Sensation, "aaa");
-            p.AddPropery("h1", CssProperty.ColorStop, "werghjk");
-            Console.WriteLine(p.ToString());
+            string s = @"h1
+{
+        color:#000;
+        background-color:#ebebeb;
+        sensation:aaa;
+        color-stop:werghjk;
+}
+";
+            CssParser p = new CssParser();
+            p.Css = s;
+            p.AddPropery(Tag.h1, CssProperty.Color, "#000");
+            p.AddPropery(Tag.h1, CssProperty.BackgroundColor, "#fff");
+            p.AddPropery("rfv", CssProperty.Size,"1589621478563");
+            Console.WriteLine(p.Css);
             Console.Read();
         }
     }

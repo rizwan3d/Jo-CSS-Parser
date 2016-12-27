@@ -1,32 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace JoCSSParser
+namespace JoCssParser
 {
-    public class Parser
+    /// <summary>
+    /// Parser css code to add/remove or manage it.
+    /// </summary>
+    public class CssParser
     {
+        //
+        //
+        // Private
+        //
+        //
         Dictionary<CssProperty, string> PrpertyValue;
-        public override string ToString()
-        {
-            string ToRreturn = string.Empty;
-            foreach(TagWithCSS T in TagWithCSSList)
-            {
-#if DEBUG
-                ToRreturn += "//---------------------------" + T.TagName + "-----------------------------\n";
-#endif
-                ToRreturn += T.TagName;
-                ToRreturn += "\n{\n";
-                foreach(Property p in T.Properties)
-                {
-                    ToRreturn += "\t" + p.PropertyName + ":" + p.PropertyValue + ";\n";
-                }
-                ToRreturn += "}\n";
+        Dictionary<Tag, string> tag;
 
-            }
-            return ToRreturn;
-        }
         List<TagWithCSS> TagWithCSSList;
         List<TagWithCSS> GetTagWithCSS(string input)
         {
@@ -61,7 +53,7 @@ namespace JoCSSParser
         }
         List<string> IndivisualTags(string input)
         {
-            string pattern = @"(?<selector>(?:(?:[^,{]+),?)*?)\{(?:(?<name>[^}:]+):?(?<value>[^};]+);?)*?\}"/*@"(?<=\}\s*)(?<selector>[^\{\}]+?)(?:\s*\{(?<style>[^\{\}]+)\})"*/;
+            string pattern = @"(?<selector>(?:(?:[^,{]+),?)*?)\{(?:(?<name>[^}:]+):?(?<value>[^};]+);?)*?\}";
 
             List<string> b = new List<string>();
 
@@ -105,170 +97,6 @@ namespace JoCSSParser
             input = input.Trim();
             input = input.TrimEnd();
             return input;
-        }
-        public bool RemoveProperty(string Tag, CssProperty Proverty)
-        {
-            int pointinTagWithCSSList = 0;
-            int pointinProperties = 0;
-            string ProvertyName = PrpertyValue[Proverty];
-            foreach (TagWithCSS T in TagWithCSSList)
-            {
-                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    foreach (Property p in T.Properties)
-                    {
-                        if (p.PropertyName.Equals(ProvertyName, StringComparison.InvariantCultureIgnoreCase))
-                        {   
-                            TagWithCSSList[pointinTagWithCSSList].Properties.RemoveAt(pointinProperties);
-                            return true;
-                        }                       
-                        pointinProperties++;
-                    }
-
-                }
-                pointinTagWithCSSList++;
-            }
-            return false;
-        }
-        public bool RemoveTag(string Tag)
-        {
-            int pointinTagWithCSSList = 0;
-
-            foreach (TagWithCSS T in TagWithCSSList)
-            {
-                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    TagWithCSSList.RemoveAt(pointinTagWithCSSList);
-                    return true;
-                }
-                pointinTagWithCSSList++;
-            }
-            return false;
-        }
-        public List<Property> GetProperties(string Tag)
-        {
-            int pointinTagWithCSSList = 0;     
-
-            foreach (TagWithCSS T in TagWithCSSList)
-            {
-                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return T.Properties;
-                }
-                pointinTagWithCSSList++;
-            }
-            return new List<Property>();
-        }
-        public Property GetPropertie(string Tag,CssProperty Property)
-        {
-            int pointinTagWithCSSList = 0;
-
-            foreach (TagWithCSS T in TagWithCSSList)
-            {
-                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
-                {
-                   foreach(Property p in T.Properties)
-                    {
-                        if (p.PropertyName.Equals(PrpertyValue[Property], StringComparison.InvariantCultureIgnoreCase))
-                            return p;
-                    }
-                }
-                pointinTagWithCSSList++;
-            }
-            return new Property();
-        }
-        public void SetCSS(string input)
-        {
-            TagWithCSSList = GetTagWithCSS(input);
-        }
-        public bool AddPropery(string Tag, /*string*/ CssProperty Proverty, string PropertValue, TagType Type = TagType.Tag)
-        {
-            int pointinTagWithCSSList = 0;
-            int pointinProperties = 0;
-            bool notfound = false;
-            bool added = false;
-
-            bool tagcannotexist = true;
-            bool tagExist = false;
-
-            if (Type == TagType.Class) { Tag = "." + Tag; }
-            if (Type == TagType.Id) { Tag = "#" + Tag; }
-
-            string ProvertyName = PrpertyValue[Proverty];
-
-            foreach (TagWithCSS T in TagWithCSSList)
-            {
-                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    foreach (Property p in T.Properties)
-                    {
-                        if (p.PropertyName.Equals(ProvertyName, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            Property np = new Property();
-                            np.PropertyName = ProvertyName;
-                            np.PropertyValue = PropertValue;
-                            TagWithCSSList[pointinTagWithCSSList].Properties[pointinProperties] = np;
-                            added = true;
-                            return true;//break;
-                        }
-                        notfound = true;
-                        pointinProperties++;
-                    }
-
-                    if (notfound && !added)
-                    {
-                        Property np = new Property();
-                        np.PropertyName = ProvertyName;
-                        np.PropertyValue = PropertValue;
-                        TagWithCSSList[pointinTagWithCSSList].Properties.Add(np);
-                        added = true;
-                        return true;//break;                 
-                    }
-                    tagExist = true;
-                    tagcannotexist = false;                    
-                }
-                else
-                {
-                    tagExist = false;
-                    tagcannotexist = true;
-                }
-                pointinTagWithCSSList++;
-            }
-            if (tagcannotexist && !tagExist)
-            {
-                TagWithCSS t = new TagWithCSS();
-                t.TagName = Tag;
-                Property p = new Property();
-                p.PropertyName = ProvertyName;
-                p.PropertyValue = PropertValue;
-                List<Property> pl = new List<Property>();
-                pl.Add(p);
-                t.Properties = pl;
-                TagWithCSSList.Add(t);
-                return true;//break;
-            }
-            return false;
-        }
-        public Parser(string input)
-        {
-            SetPrpertyValue();
-            SetCSS(input);
-        }
-        public Parser()
-        {
-            SetPrpertyValue();
-            TagWithCSSList = new List<TagWithCSS>();
-        }
-        public bool TagExist(string Tag)
-        {
-            foreach (TagWithCSS T in TagWithCSSList)
-            {
-                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
         void SetPrpertyValue()
         {
@@ -328,6 +156,330 @@ namespace JoCSSParser
                 PrpertyValue.Add((CssProperty)i, T);
                 i++;
             }
+        }
+        void setHTML()
+        {
+            tag = new Dictionary<Tag, string>();
+            string[] tags = {"h1","h2","h3","h4","h5","h6","body","a","img","ol"," ul","li","table","tr","th","nav","heder","footer","form","option","select","button","textarea","input","audio","video","iframe","hr","em","div","pre","p" , "span" };
+            int i = 0;
+            foreach (string T in tags)
+            {
+                tag.Add((Tag)i, T);
+                i++;
+            }
+        }
+        //
+        //
+        //  Public 
+        //
+        //
+        public override string ToString()
+        {
+            string ToRreturn = string.Empty;
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+#if DEBUG
+                ToRreturn += "//---------------------------" + T.TagName + "-----------------------------\n";
+#endif
+                ToRreturn += T.TagName;
+                ToRreturn += "\n{\n";
+                foreach (Property p in T.Properties)
+                {
+                    ToRreturn += "\t" + p.PropertyName + ":" + p.PropertyValue + ";\n";
+                }
+                ToRreturn += "}\n";
+
+            }
+            return ToRreturn;
+        }
+        /// <summary>
+        /// Set and return Css Code.
+        /// </summary>
+        [DefaultValue(typeof (string), "")]
+        [Description("Set and return Css Code.")]
+        public string Css { set { TagWithCSSList = GetTagWithCSS(value); } get { return this.ToString(); } }
+        /// <summary>
+        /// Remove property form given tag.
+        /// </summary>
+        /// <param name="Tag">Tage to remove property.</param>
+        /// <param name="Proverty">Property to remove.</param>
+        /// <returns>True if removed.</returns>
+        public bool RemoveProperty(string Tag, CssProperty Proverty)
+        {
+            if (Tag == "" || Tag == string.Empty || Tag == "")
+                throw new NULL_TAG();
+            int pointinTagWithCSSList = 0;
+            int pointinProperties = 0;
+            string ProvertyName = PrpertyValue[Proverty];
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    foreach (Property p in T.Properties)
+                    {
+                        if (p.PropertyName.Equals(ProvertyName, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            TagWithCSSList[pointinTagWithCSSList].Properties.RemoveAt(pointinProperties);
+                            return true;
+                        }
+                        pointinProperties++;
+                    }
+
+                }
+                pointinTagWithCSSList++;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Remove property form given tag.
+        /// </summary>
+        /// <param name="Tag">Tage to remove property.</param>
+        /// <param name="Proverty">Property to remove.</param>
+        /// <returns>True if removed.</returns>
+        public bool RemoveProperty(Tag tag, CssProperty Proverty)
+        {
+            string _ = this.tag[tag];
+            return RemoveProperty(_, Proverty);
+        }
+        /// <summary>
+        /// Remove Tag and it's properties.
+        /// </summary>
+        /// <param name="Tag">Tag to remove.</param>
+        /// <returns>True if removed.</returns>
+        public bool RemoveTag(string Tag)
+        {
+            if (Tag == "" || Tag == string.Empty || Tag == "")
+                throw new NULL_TAG();
+            int pointinTagWithCSSList = 0;
+
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TagWithCSSList.RemoveAt(pointinTagWithCSSList);
+                    return true;
+                }
+                pointinTagWithCSSList++;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Remove Tag and it's properties.
+        /// </summary>
+        /// <param name="Tag">Tag to remove.</param>
+        /// <returns>True if removed.</returns>
+        public bool RemoveTag(Tag tag)
+        {
+            string _ = this.tag[tag];
+            return RemoveTag(_);
+        }
+        /// <summary>
+        /// Get list of properties on tag.
+        /// </summary>
+        /// <param name="Tag">Tag to get properties</param>
+        /// <returns>Property List</returns>
+        public List<Property> GetProperties(string Tag)
+        {
+            if (Tag == "" || Tag == string.Empty || Tag == "")
+                throw new NULL_TAG();
+            int pointinTagWithCSSList = 0;
+
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return T.Properties;
+                }
+                pointinTagWithCSSList++;
+            }
+            return new List<Property>();
+        }
+        /// <summary>
+        /// Get list of properties on tag.
+        /// </summary>
+        /// <param name="Tag">Tag to get properties</param>
+        /// <returns>Property List</returns>
+        public List<Property> GetProperties(Tag tag)
+        {
+            string _ = this.tag[tag];
+            return GetProperties(_);
+        }
+        /// <summary>
+        /// Get property.
+        /// </summary>
+        /// <param name="Tag">Name of tag.</param>
+        /// <param name="Property">Property to value.</param>
+        /// <returns>Property</returns>
+        public Property GetPropertie(string Tag, CssProperty Property)
+        {
+            if (Tag == "" || Tag == string.Empty || Tag == "")
+                throw new NULL_TAG();
+            int pointinTagWithCSSList = 0;
+
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    foreach (Property p in T.Properties)
+                    {
+                        if (p.PropertyName.Equals(PrpertyValue[Property], StringComparison.InvariantCultureIgnoreCase))
+                            return p;
+                    }
+                }
+                pointinTagWithCSSList++;
+            }
+            return new Property();
+        }
+        /// <summary>
+        /// Get property.
+        /// </summary>
+        /// <param name="Tag">Name of tag.</param>
+        /// <param name="Property">Property to value.</param>
+        /// <returns>Property</returns>
+        public Property GetPropertie(Tag tag, CssProperty Property)
+        {
+            string _ = this.tag[tag];
+            return GetPropertie(_, Property);
+        }
+        /// <summary>
+        /// Add/Overwrite property or property's value of tag.  
+        /// </summary>
+        /// <param name="Tag">Tag name.</param>
+        /// <param name="property">Property to add/overwrite</param>
+        /// <param name="PropertValue">Property's valueto add/overwrite</param>
+        /// <param name="Type">Type of tag (HTML tag ,Class or Id).Deffalt HTML Tag.</param>
+        /// <returns>Added/Overwrited or not.</returns>
+        public bool AddPropery(string Tag, CssProperty property, string PropertValue, TagType Type = TagType.Tag)
+        {
+            if (Tag == "" || Tag == string.Empty || Tag == "")
+                throw new NULL_TAG();
+            if (PropertValue == "" || PropertValue == string.Empty || PropertValue == "")
+                throw new NULL_PRORERTY_VALUE();
+            int pointinTagWithCSSList = 0;
+            int pointinProperties = 0;
+            bool notfound = false;
+            bool added = false;
+
+            bool tagcannotexist = true;
+            bool tagExist = false;
+
+            if (Type == TagType.Class) { Tag = "." + Tag; }
+            if (Type == TagType.Id) { Tag = "#" + Tag; }
+
+            string ProvertyName = PrpertyValue[property];
+
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    foreach (Property p in T.Properties)
+                    {
+                        if (p.PropertyName.Equals(ProvertyName, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            Property np = new Property();
+                            np.PropertyName = ProvertyName;
+                            np.PropertyValue = PropertValue;
+                            TagWithCSSList[pointinTagWithCSSList].Properties[pointinProperties] = np;
+                            added = true;
+                            return true;//break;
+                        }
+                        notfound = true;
+                        pointinProperties++;
+                    }
+
+                    if (notfound && !added)
+                    {
+                        Property np = new Property();
+                        np.PropertyName = ProvertyName;
+                        np.PropertyValue = PropertValue;
+                        TagWithCSSList[pointinTagWithCSSList].Properties.Add(np);
+                        added = true;
+                        return true;//break;                 
+                    }
+                    tagExist = true;
+                    tagcannotexist = false;
+                }
+                else
+                {
+                    tagExist = false;
+                    tagcannotexist = true;
+                }
+                pointinTagWithCSSList++;
+            }
+            if (tagcannotexist && !tagExist)
+            {
+                TagWithCSS t = new TagWithCSS();
+                t.TagName = Tag;
+                Property p = new Property();
+                p.PropertyName = ProvertyName;
+                p.PropertyValue = PropertValue;
+                List<Property> pl = new List<Property>();
+                pl.Add(p);
+                t.Properties = pl;
+                TagWithCSSList.Add(t);
+                return true;//break;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Add/Overwrite property or property's value of tag.  
+        /// </summary>
+        /// <param name="Tag">Tag name.</param>
+        /// <param name="property">Property to add/overwrite</param>
+        /// <param name="PropertValue">Property's valueto add/overwrite</param>
+        /// <param name="Type">Type of tag (HTML tag ,Class or Id).Deffalt HTML Tag.</param>
+        /// <returns>Added/Overwrited or not.</returns>
+        public bool AddPropery(Tag tag, CssProperty property, string PropertValue)
+        {
+            string _ = this.tag[tag];
+            return AddPropery(_, property, PropertValue);
+        }
+        /// <summary>
+        /// Initilise the pasrser with Css code.
+        /// </summary>
+        /// <param name="input">CSS code.</param>
+        public CssParser(string input)
+        {
+            setHTML();
+            SetPrpertyValue();
+            Css = input;
+        }
+        /// <summary>
+        /// Initilise the pasrser without Css code.
+        /// </summary>
+        public CssParser()
+        {
+            setHTML();
+            SetPrpertyValue();
+            TagWithCSSList = new List<TagWithCSS>();
+        }
+        /// <summary>
+        /// Check the existance of tag.
+        /// </summary>
+        /// <param name="Tag">Name of tag.</param>
+        /// <returns>True if exist.</returns>
+        public bool TagExist(string Tag)
+        {
+            if (Tag == "" || Tag == string.Empty || Tag == "")
+                throw new NULL_TAG();
+            foreach (TagWithCSS T in TagWithCSSList)
+            {
+                if (T.TagName.Equals(Tag, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }   
+        /// <summary>
+            /// Check the existance of tag.
+            /// </summary>
+            /// <param name="Tag">Name of tag.</param>
+            /// <returns>True if exist.</returns>
+        public bool TagExist(Tag tag)
+        {
+            string _ = this.tag[tag];
+            return TagExist(_);
         }
     }
 }
